@@ -1,0 +1,10 @@
+xxx.csv
+state_a, command_1, state_b
+state_a, command_2, state_c
+state_b, command_1, state_c
+
+array:
+        command_1, command_2
+state_a   state_b, state_c
+state_b   state_c, -1
+state_c     -1   , -1

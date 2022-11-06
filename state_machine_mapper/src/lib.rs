@@ -19,59 +19,53 @@ impl StateMachine {
         };
 
         content.split("\n").for_each(|x| {
+            let mut pre_state: String = String::from("");
+            let mut command: String = String::from("");
             let mut i = 0;
             x.split(",").for_each(|x| {
                 let commands_len = state_machine.commands.len() as i32;
                 let states_len = state_machine.states.len() as i32;
-                if !x.is_empty() {
-                    if i % 3 == 1 {
-                        state_machine
-                            .commands
-                            .entry(x.trim().to_string())
-                            .or_insert(commands_len);
-                    } else {
-                        state_machine
-                            .states
-                            .entry(x.trim().to_string())
-                            .or_insert(states_len);
-                        // TODO:
-                        // let s = state_machine.states.len() as usize;
-                        // let c = state_machine.commands.len() as usize;
-                        // state_machine.map[s][c] = state_machine.states[&x.trim().to_string()];
-                    }
-                    i += 1;
+                if x.is_empty() {
+                    return;
                 }
+
+                if i % 3 == 1 {
+                    command = x.trim().to_string();
+                    state_machine
+                        .commands
+                        .entry(command.to_string())
+                        .or_insert(commands_len);
+                } else if i % 3 == 0 {
+                    pre_state = x.trim().to_string();
+                    state_machine
+                        .states
+                        .entry(pre_state.to_string())
+                        .or_insert(states_len);
+                } else if i % 3 == 2 {
+                    let s = state_machine.states[&pre_state] as usize;
+                    let c = state_machine.commands[&command] as usize;
+
+                    let after_state = x.trim().to_string();
+                    state_machine
+                        .states
+                        .entry(after_state.to_string())
+                        .or_insert(states_len);
+
+                    while state_machine.map.len() < state_machine.states.len() {
+                        state_machine.map.push(Vec::new());
+                    }
+                    for i in 0..state_machine.map.len() {
+                        while state_machine.map[i].len() < state_machine.commands.len() {
+                            state_machine.map[i].push(-1);
+                        }
+                    }
+                    state_machine.map[s][c] = state_machine.states[&after_state];
+                }
+                i += 1;
             })
         });
 
         return state_machine;
-    }
-
-    pub fn gen_map(&self, content: &str) -> Vec<Vec<i32>> {
-        let mut result = vec![vec![-1; self.commands.len()]; self.states.len()];
-        content.split("\n").for_each(|x| {
-            let mut i = 0;
-            let mut a = 0;
-            let mut b = 0;
-            x.split(",").for_each(|y| {
-                if y.is_empty() {
-                    return;
-                }
-                if i == 0 {
-                    b = self.states[y.trim()] as usize;
-                } else if i == 1 {
-                    a = self.commands[y.trim()] as usize;
-                } else {
-                    // if result[b][a] != -1 {
-                    //     panic!("State: {} already received one command: {}");
-                    // }
-                    result[b][a] = self.states[y.trim()];
-                }
-                i += 1;
-            });
-        });
-
-        return result;
     }
 }
 
@@ -138,7 +132,7 @@ state_c, command_3, state_d\n
 
         let s = StateMachine::build(&content);
 
-        let actual = s.gen_map(&content);
+        let actual = s.map;
 
         let expected = vec![
             vec![s.states["state_b"], s.states["state_c"], -1],

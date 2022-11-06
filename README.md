@@ -6,7 +6,7 @@ Generate two dimension array for state machine.
 
 Prepare data in `input.csv`.
 
-* In test.csv
+* In input.csv
 
   ```csv
   state_a, command_1, state_b

@@ -18,10 +18,10 @@ impl StateMachine {
             map: Vec::new(),
         };
 
+        let mut i = 0;
         content.split("\n").for_each(|x| {
-            let mut pre_state: String = String::from("");
-            let mut command: String = String::from("");
-            let mut i = 0;
+            let mut pre_state: String = String::new();
+            let mut command: String = String::new();
             x.split(",").for_each(|x| {
                 let commands_len = state_machine.commands.len() as i32;
                 let states_len = state_machine.states.len() as i32;
@@ -51,6 +51,9 @@ impl StateMachine {
                         .entry(after_state.to_string())
                         .or_insert(states_len);
 
+                    // NOTE: dynamically generate two dimension Vector to store info about relation
+                    // between state and command.
+                    // TODO: Maybe be able to use dynamic programming?
                     while state_machine.map.len() < state_machine.states.len() {
                         state_machine.map.push(Vec::new());
                     }
@@ -58,6 +61,11 @@ impl StateMachine {
                         while state_machine.map[i].len() < state_machine.commands.len() {
                             state_machine.map[i].push(-1);
                         }
+                    }
+
+                    if state_machine.map[s][c] != -1 {
+                        let org_state = state_machine.states.iter().find_map(|(key, value)| if *value == state_machine.map[s][c] {Some(key)} else {None});
+                        panic!("Error: previous state: {} receiving the same command: {} becomes different states: {} || {}", pre_state, command, org_state.unwrap_or(&"None".to_string()), after_state);
                     }
                     state_machine.map[s][c] = state_machine.states[&after_state];
                 }
@@ -106,20 +114,7 @@ state_b, command_1, state_c\n
     }
 
     #[test]
-    fn state_machine_gen_map_ok() {
-        // TODO: the same state receives the same command but becomes different final state, this
-        // case should panic
-        //
-        //         let content = String::from(
-        //             "
-        // state_a, command_1, state_b\n
-        // state_a, command_2, state_c\n
-        // state_a, command_2, state_d\n
-        // state_b, command_1, state_c\n
-        // state_b, command_2, state_d\n
-        // state_c, command_3, state_d\n
-        // ",
-        //         );
+    fn state_machine_map_ok() {
         let content = String::from(
             "
 state_a, command_1, state_b\n
@@ -142,5 +137,26 @@ state_c, command_3, state_d\n
         ];
 
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    #[should_panic(
+        expected = "Error: previous state: state_a receiving the same command: command_2 becomes different states: state_c || state_d"
+    )]
+    fn state_machine_map_panic() {
+        // NOTE: the same state receives the same command but becomes different final state, this
+        // case should be panic
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_a, command_2, state_d\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        StateMachine::build(&content);
     }
 }

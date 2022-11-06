@@ -11,6 +11,18 @@ pub fn run(input_file: &str) -> Result<String, Box<dyn Error>> {
 }
 
 impl StateMachine {
+    pub fn states(&self) -> &HashMap<String, i32> {
+        &self.states
+    }
+
+    pub fn commands(&self) -> &HashMap<String, i32> {
+        &self.commands
+    }
+
+    pub fn map(&self) -> &Vec<Vec<i32>> {
+        &self.map
+    }
+
     pub fn build(content: &str) -> Self {
         let mut state_machine = StateMachine {
             states: HashMap::new(),
@@ -94,7 +106,7 @@ state_b, command_1, state_c\n
         let s = StateMachine::build(&content);
 
         assert_eq!(
-            s.states,
+            *s.states(),
             HashMap::from([
                 ("state_a".to_string(), 0),
                 ("state_b".to_string(), 1),
@@ -102,7 +114,7 @@ state_b, command_1, state_c\n
             ])
         );
         assert_eq!(
-            s.commands,
+            *s.commands(),
             HashMap::from([("command_1".to_string(), 0), ("command_2".to_string(), 1),])
         );
 
@@ -127,7 +139,7 @@ state_c, command_3, state_d\n
 
         let s = StateMachine::build(&content);
 
-        let actual = s.map;
+        let actual = s.map();
 
         let expected = vec![
             vec![s.states["state_b"], s.states["state_c"], -1],
@@ -136,7 +148,7 @@ state_c, command_3, state_d\n
             vec![-1, -1, -1],
         ];
 
-        assert_eq!(actual, expected);
+        assert_eq!(*actual, expected);
     }
 
     #[test]

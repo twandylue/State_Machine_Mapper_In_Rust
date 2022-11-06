@@ -1,2 +1,5 @@
 state_a, command_1, state_b
 state_a, command_2, state_c
+state_b, command_1, state_c
+state_b, command_2, state_d
+state_c, command_3, state_d

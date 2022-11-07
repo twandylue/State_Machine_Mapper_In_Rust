@@ -33,6 +33,64 @@ pub fn formate_output(state_machine: &StateMachine) {
     println!("]");
 }
 
+pub fn output_in_rust(state_machine: &StateMachine) -> String {
+    let result = format!("let array = {:?};", state_machine.map());
+
+    return result;
+}
+
+pub fn output_in_csharp(state_machine: &StateMachine) -> String {
+    let result = format!(
+        "int [,] array = {};",
+        format!(
+            "new int[,] {}",
+            format!("{:?}", state_machine.map())
+                .replace("[", "{")
+                .replace("]", "}")
+        )
+    );
+
+    return result;
+}
+
+pub fn output_in_js(state_machine: &StateMachine) -> String {
+    let result = format!("const array = {};", format!("{:?}", state_machine.map()));
+
+    return result;
+}
+
+pub fn output_in_python(state_machine: &StateMachine) -> String {
+    let result = format!("const array = {}", format!("{:?}", state_machine.map()));
+
+    return result;
+}
+
+pub fn output_in_cpp(state_machine: &StateMachine) -> String {
+    let y = state_machine.states().len();
+    let x = state_machine.commands().len();
+    let result = format!(
+        "int array[{y}][{x}] = {};",
+        format!("{:?}", state_machine.map())
+            .replace("[", "{")
+            .replace("]", "}")
+    );
+
+    return result;
+}
+
+pub fn output_in_go(state_machine: &StateMachine) -> String {
+    let y = state_machine.states().len();
+    let x = state_machine.commands().len();
+    let result = format!(
+        "var array = [{y}][{x}]int{}",
+        format!("{:?}", state_machine.map())
+            .replace("[", "{")
+            .replace("]", "}")
+    );
+
+    return result;
+}
+
 pub fn run(input_file: &str) -> Result<String, Box<dyn Error>> {
     return Ok(fs::read_to_string(input_file)?);
 }
@@ -197,5 +255,127 @@ state_c, command_3, state_d\n
         );
 
         StateMachine::build(&content);
+    }
+
+    #[test]
+    fn output_in_csharp_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_csharp(&s);
+        let expected = String::from(
+            "int [,] array = new int[,] {{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}};",
+        );
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn output_in_rust_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_rust(&s);
+        let expected =
+            String::from("let array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]];");
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn output_in_cpp_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_cpp(&s);
+        let expected =
+            String::from("int array[4][3] = {{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}};");
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn output_in_js_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_js(&s);
+        let expected =
+            String::from("const array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]];");
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn output_in_python_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_python(&s);
+        let expected =
+            String::from("const array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]]");
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn output_in_go_ok() {
+        let content = String::from(
+            "
+state_a, command_1, state_b\n
+state_a, command_2, state_c\n
+state_b, command_1, state_c\n
+state_b, command_2, state_d\n
+state_c, command_3, state_d\n
+",
+        );
+
+        let s = StateMachine::build(&content);
+        let actual = output_in_go(&s);
+        let expected = String::from(
+            "var array = [4][3]int{{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}}",
+        );
+
+        assert_eq!(actual, expected);
     }
 }

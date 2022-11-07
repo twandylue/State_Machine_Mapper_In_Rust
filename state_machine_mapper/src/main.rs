@@ -1,4 +1,4 @@
-use state_machine_mapper::{run, StateMachine};
+use state_machine_mapper::{formate_output, run, StateMachine};
 use std::env;
 
 fn main() {
@@ -7,10 +7,14 @@ fn main() {
     match run(&args[1]) {
         Ok(content) => {
             let s = StateMachine::build(&content);
-            // TODO: print stdout in more detail.
+            // TODO:
+            // 1. print stdout in more detail.
             println!("states list: {:#?}", s.states());
             println!("commands list: {:#?}", s.commands());
-            println!("states and commands map: {:?}", s.map());
+            println!("states and commands map: \n{:?}", s.map());
+            println!();
+            println!("* Output: ");
+            formate_output(&s);
         }
         Err(err) => println!("Application error: {}", err),
     }

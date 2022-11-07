@@ -6,6 +6,33 @@ pub struct StateMachine {
     map: Vec<Vec<i32>>,
 }
 
+pub fn formate_output(state_machine: &StateMachine) {
+    // TODO: could be more efficient?
+    let mut rev_states = HashMap::<i32, String>::new();
+    state_machine.states().iter().for_each(|(key, val)| {
+        rev_states.insert(*val, key.to_string());
+    });
+    let mut rev_commands = HashMap::<i32, String>::new();
+    state_machine.commands().iter().for_each(|(key, val)| {
+        rev_commands.insert(*val, key.to_string());
+    });
+
+    let mut i = 0;
+    state_machine.commands().iter().for_each(|_| {
+        print!("  {}", rev_commands[&i]);
+        i += 1;
+    });
+    println!();
+    println!("[");
+
+    i = 0;
+    state_machine.map().iter().for_each(|x| {
+        println!("  {:?} | {}", *x, rev_states[&i]);
+        i += 1;
+    });
+    println!("]");
+}
+
 pub fn run(input_file: &str) -> Result<String, Box<dyn Error>> {
     return Ok(fs::read_to_string(input_file)?);
 }

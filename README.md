@@ -1,6 +1,6 @@
 # State_Machine_Mapper_In_Rust
 
-Transform One-dimension State-transition to Two-dimensions State-transition table for state machine.
+Transform One-dimension State-transition table to Two-dimensions State-transition table for state machine.
 
 ## Introduction
 

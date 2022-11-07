@@ -17,11 +17,11 @@ fn main() {
             println!("commands list: {:#?}", s.commands());
             println!();
 
-            println!("* === Output ===");
+            println!("* === 2D State-transition table ===");
             formate_output(&s);
             println!();
 
-            println!("* === Map in different languages ===");
+            println!("* === 2D State-transition table(2D array) in different languages ===");
             println!("Map in rust: \n{}", output_in_rust(&s));
             println!("Map in cpp: \n{}", output_in_cpp(&s));
             println!("Map in go: \n{}", output_in_go(&s));

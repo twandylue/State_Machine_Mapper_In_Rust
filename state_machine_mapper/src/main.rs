@@ -12,12 +12,16 @@ fn main() {
             let s = StateMachine::build(&content);
             // TODO:
             // 1. print stdout in more detail.
+            // 2. generate list in different languages
             println!("states list: {:#?}", s.states());
             println!("commands list: {:#?}", s.commands());
-            println!("states and commands map: \n{:?}", s.map());
             println!();
-            println!("* Output: ");
+
+            println!("* === Output ===");
             formate_output(&s);
+            println!();
+
+            println!("* === Map in different languages ===");
             let output_in_csharp = output_in_csharp(&s);
             let output_in_js = output_in_js(&s);
             let output_in_python = output_in_python(&s);

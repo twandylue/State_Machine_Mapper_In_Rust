@@ -31,10 +31,8 @@ commands list: {
     "command_2": 1,
     "command_3": 2,
 }
-states and commands map:
-[[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]]
 
-* Output:
+* === Output ===
   command_1  command_2  command_3
 [
   [1, 2, -1], | state_a
@@ -42,6 +40,20 @@ states and commands map:
   [-1, -1, 3], | state_c
   [-1, -1, -1], | state_d
 ]
+
+* === Map in different languages ===
+Map in rust:
+let array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]];
+Map in cpp:
+int array[4][3] = {{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}};
+Map in go:
+var array = [4][3]int{{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}}
+Map in c_sharp:
+int [,] array = new int[,] {{1, 2, -1}, {2, 3, -1}, {-1, -1, 3}, {-1, -1, -1}};
+Map in js:
+const array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]];
+Map in python:
+const array = [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]]
 ```
 
 ## References

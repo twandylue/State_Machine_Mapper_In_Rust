@@ -31,7 +31,17 @@ commands list: {
     "command_2": 1,
     "command_3": 2,
 }
-states and commands map: [[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]]
+states and commands map:
+[[1, 2, -1], [2, 3, -1], [-1, -1, 3], [-1, -1, -1]]
+
+* Output:
+  command_1  command_2  command_3
+[
+  [1, 2, -1], | state_a
+  [2, 3, -1], | state_b
+  [-1, -1, 3], | state_c
+  [-1, -1, -1], | state_d
+]
 ```
 
 ## References

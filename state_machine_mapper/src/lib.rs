@@ -27,7 +27,7 @@ pub fn formate_output(state_machine: &StateMachine) {
 
     i = 0;
     state_machine.map().iter().for_each(|x| {
-        println!("  {:?} | {}", *x, rev_states[&i]);
+        println!("  {:?}, | {}", *x, rev_states[&i]);
         i += 1;
     });
     println!("]");
